@@ -8,7 +8,12 @@ if (process.env.DATABASE_URL != null) {
       dialect: 'postgres',
       protocol: 'postgres',
       dialectOptions: {
-          ssl: true
+          ssl: false
+      },
+      database: 'criticism_app_production',
+      define: {
+        timestamps: true,
+        underscored: true
       }
   });
 } else {
