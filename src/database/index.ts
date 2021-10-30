@@ -8,7 +8,7 @@ if (process.env.DATABASE_URL != null) {
       dialect: 'postgres',
       protocol: 'postgres',
       dialectOptions: {
-          ssl: false
+          ssl: true
       },
       database: 'criticism_app_production',
       define: {
