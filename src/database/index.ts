@@ -1,6 +1,18 @@
-const Sequelize = require('sequelize');
+import { Sequelize } from "sequelize/types";
+const Sequelizes = require('sequelize');
 const dbConfig = require('../config/database.ts')
+var connection: Sequelize;
 
-const connection = new Sequelize(dbConfig)
+if (process.env.DATABASE_URL != null) {
+  connection = new Sequelizes(process.env.DATABASE_URL, {
+      dialect: 'postgres',
+      protocol: 'postgres',
+      dialectOptions: {
+          ssl: true
+      }
+  });
+} else {
+  connection = new Sequelizes(dbConfig)
+}
 
 export default connection;
