@@ -6,8 +6,8 @@
   "author": "Pedro Paião <devpedropaiao@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev src/server.ts",
-    "start": "ts-node-dev src/server.ts"
+    "dev": "ts-node src/server.ts",
+    "start": "ts-node src/server.ts"
   },
   "dependencies": {
     "@types/express": "^4.17.13",
