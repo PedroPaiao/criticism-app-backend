@@ -4,13 +4,12 @@ const dbConfig = require('../config/database.ts')
 var connection: Sequelize;
 
 if (process.env.DATABASE_URL != null) {
-  connection = new Sequelizes(`${process.env.DATABASE_URI}?sslmode=require`, {
-      url: process.env.DATABASE_URI,
+  connection = new Sequelizes(`${process.env.DATABASE_URL}?sslmode=require`, {
+      url: process.env.DATABASE_URL,
       dialect: 'postgres',
       protocol: 'postgres',
       dialectOptions: {
           ssl: true,
-          rejectUnauthorized: false, // very important
       },
       database: 'criticism_app_production',
       define: {
