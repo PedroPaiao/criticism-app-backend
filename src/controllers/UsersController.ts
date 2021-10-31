@@ -6,8 +6,7 @@ const bcrypt = require('bcryptjs');
 class UsersController {
 
   async index(req: Request, res: Response) {
-    const users = await User.findAll();
-
+    const users = await User.findAll();    
     return res.json(users)
   }
 
@@ -16,27 +15,29 @@ class UsersController {
     const user = await User.findByPk(id)
 
     if (!user) { return res.json({ error: "User not found!" }) }
-
     return res.json(user)
   }
   
   async store(req: Request, res: Response) {
-      
-    //const emailExists = await User.findByEmail(email)
-    //if (emailExists) { return     }
+    const { name, email } = req.body;      
+    
+    const user = new User();
+    const emailExists = await user.findByEmail(req);    
+    if (emailExists) { return res.sendStatus(409) }
     
     try {
-      const { name, email } = req.body;      
       const salt = await bcrypt.genSalt();
       const password = await bcrypt.hash(req.body.password, salt);
-      console.log(salt)
-      console.log(password)
+      // console.log(salt)
+      // console.log(password)
 
       const user = await User.create({ name, email, password });
+      // console.log("user sent:", user)
+
       return res.json(user);
       
-    } catch {
-      res.status(500).send('Something went wrong...')
+    } catch(error) {
+      res.status(500).send({ 'message' : 'Something went wrong...' } )
     }
 
   }
@@ -61,11 +62,7 @@ class UsersController {
     
     await user?.destroy()
     return res.json({ sucess: "Success on delete"})
-  }
-
-  findByEmail(email: string) {
-
-  }
+  } 
 
 }
 
