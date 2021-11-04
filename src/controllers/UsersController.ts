@@ -1,13 +1,20 @@
 import { Response, Request } from 'express';
 import User from '../models/User';
 
+const serializer = require('express-serializer');
+
+import UserSerializer from '../serializers/UserSerliazer';
+
 const bcrypt = require('bcryptjs');
 
 class UsersController {
 
   async index(req: Request, res: Response) {
     const users = await User.findAll();    
-    return res.json(users)
+    const options = { except: 'password' }
+    serializer(req, users, UserSerializer, options).then((json: Object) => {
+      return res.send(json)
+    })
   }
 
   async show(req: Request, res: Response) {
@@ -31,9 +38,12 @@ class UsersController {
     try {
       const salt = await bcrypt.genSalt();
       const encrypted_password = await bcrypt.hash(password, salt);
-      
-      const newUser = await User.create({ name, email, password: encrypted_password });      
-      return res.json(newUser);
+      const options = { except: 'password' }
+      const newUser = await User.create({ name, email, password: encrypted_password });
+
+      serializer(req, newUser, UserSerializer, options).then((json: Object) => {
+        return res.send(json)
+      })
     } catch (error) {
       return res.json(error);
     }
