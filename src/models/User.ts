@@ -11,15 +11,7 @@ class User extends Model {
       delete attributes[a];
     }
     return attributes;
-  }  
-
-  async findByEmail(req: Request) {
-    const users = await User.findAll();
-    
-    return new Promise<any>( (resolve) => resolve(
-      users.find( (user: User) => user.get('email') === req.body.email ),
-    ));
-  } 
+  }
 }
 
 User.init({

@@ -19,51 +19,55 @@ class UsersController {
   }
   
   async store(req: Request, res: Response) {
-    const { name, email } = req.body;      
+    const { name, email, password, password_confirmation } = req.body;      
     
-    const user = new User();
-    const emailExists = await user.findByEmail(req);    
-    if (emailExists) { return res.sendStatus(409) }
+    if(password != password_confirmation)
+      return res.status(422).json({ message: 'Password dont match' })
+
+    const user = await User.findOne({ where: { email: email } });    
+    if (user != null) { return res.sendStatus(422) }
     
+    /* Salt its like a prefix to random new hashcode */ 
     try {
       const salt = await bcrypt.genSalt();
-      const password = await bcrypt.hash(req.body.password, salt);
-      // console.log(salt)
-      // console.log(password)
-
-      const user = await User.create({ name, email, password });
-      // console.log("user sent:", user)
-
-      return res.json(user);
+      const encrypted_password = await bcrypt.hash(password, salt);
       
-    } catch(error) {
-      res.status(500).send({ 'message' : 'Something went wrong...' } )
+      const newUser = await User.create({ name, email, password: encrypted_password });      
+      return res.json(newUser);
+    } catch (error) {
+      return res.json(error);
     }
-
   }
 
   async update(req: Request, res: Response) {
-    const { name, email, password } = req.body;
+    const { name, email, password, password_confirmation } = req.body;
+    const user = await User.findByPk(req.params.id);
 
-    const id = req.params.id;
-    const user = await User.findByPk(id);
+    if (!user) { return res.status(404).json({ error: "User not found!" }) }
 
-    if (!user) { return res.json({ error: "User not found!" }) }
+    if(password != password_confirmation)
+      return res.status(422).json({ message: 'Password dont match' })
+
+    const salt = await bcrypt.genSalt();
+    const encrypted_password = await bcrypt.hash(password, salt);
     
-    await user.update({ name, email, password })
+    await user.update({ name, email, encrypted_password })
     return res.json(user)
   }
 
   async delete(req: Request, res: Response) {
     const { id } = req.params
-    const user = await User.findByPk(id)
+    let user = await User.findByPk(id)
     
-    if (!user) { return res.json({ error: "User not found!" })  }
+    if (user == null) { return res.json({ error: "User not found!" })  }
     
-    await user?.destroy()
-    return res.json({ sucess: "Success on delete"})
-  } 
+    await user.destroy()
 
+    user = await User.findByPk(id)
+    if (user == null) { return res.json({ error: "Something wrong!" })  }
+
+    return res.json({ sucess: "Success on delete"})
+  }
 }
 
 export default UsersController;
