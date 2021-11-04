@@ -1,0 +1,73 @@
+import { Response, Request } from 'express';
+import User from '../models/User';
+
+const bcrypt = require('bcryptjs');
+
+class UsersController {
+
+  async index(req: Request, res: Response) {
+    const users = await User.findAll();    
+    return res.json(users)
+  }
+
+  async show(req: Request, res: Response) {
+    const { id } = req.params
+    const user = await User.findByPk(id)
+
+    if (!user) { return res.json({ error: "User not found!" }) }
+    return res.json(user)
+  }
+  
+  async store(req: Request, res: Response) {
+    const { name, email, password, password_confirmation } = req.body;      
+    
+    if(password != password_confirmation)
+      return res.status(422).json({ message: 'Password dont match' })
+
+    const user = await User.findOne({ where: { email: email } });    
+    if (user != null) { return res.sendStatus(422) }
+    
+    /* Salt its like a prefix to random new hashcode */ 
+    try {
+      const salt = await bcrypt.genSalt();
+      const encrypted_password = await bcrypt.hash(password, salt);
+      
+      const newUser = await User.create({ name, email, password: encrypted_password });      
+      return res.json(newUser);
+    } catch (error) {
+      return res.json(error);
+    }
+  }
+
+  async update(req: Request, res: Response) {
+    const { name, email, password, password_confirmation } = req.body;
+    const user = await User.findByPk(req.params.id);
+
+    if (!user) { return res.status(404).json({ error: "User not found!" }) }
+
+    if(password != password_confirmation)
+      return res.status(422).json({ message: 'Password dont match' })
+
+    const salt = await bcrypt.genSalt();
+    const encrypted_password = await bcrypt.hash(password, salt);
+    
+    await user.update({ name, email, encrypted_password })
+    return res.json(user)
+  }
+
+  async delete(req: Request, res: Response) {
+    const { id } = req.params
+    let user = await User.findByPk(id)
+    
+    if (user == null) { return res.json({ error: "User not found!" })  }
+    
+    await user.destroy()
+
+    user = await User.findByPk(id)
+    if (user == null) { return res.json({ error: "Something wrong!" })  }
+
+    return res.json({ sucess: "Success on delete"})
+  }
+}
+
+export default UsersController;
