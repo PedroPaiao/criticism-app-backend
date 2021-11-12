@@ -11,7 +11,7 @@ const moviesController = new MoviesController;
 const usersController = new UsersController;
 const authController = new AuthContoller;
 
-routes.get('/', (request: Request, response: Response) => {
+routes.get('/', async (request: Request, response: Response) => {
   response.send('Hello World!')
 });
 
@@ -26,7 +26,7 @@ routes.post('/users', usersController.store)
 routes.put('/users/:id', usersController.update)
 routes.delete('/users/:id', usersController.delete)
 
-routes.post('/users/login', authController.handleLogin)
+routes.post('/login', authController.handleLogin)
 /*logout?*/
 
 

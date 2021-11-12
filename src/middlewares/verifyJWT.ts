@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const verifyJWT = (req: Request, res: Response, next: NextFunction ) => {
-  const tokenHeader = req.headers['x-access-token']
+  const tokenHeader = req.headers['Authorization']
   if (!tokenHeader) { return res.status(401).end() }
   console.log("token header = ", tokenHeader);  
 
