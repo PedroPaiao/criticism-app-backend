@@ -13,7 +13,6 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction ) => {
     tokenHeader,
     process.env.ACCESS_TOKEN_SECRET,
     (error: String , decoded: JsonWebKey) => {
-      //console.log("decoded: ", decoded, typeof(decoded))      
       if (error) { return res.status(403).end() }
       
       req.body.email = decoded.userEmail;

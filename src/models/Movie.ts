@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 
 import connection from '../database/index'
-import Criticizes from "./Criticizes";
+import Criticizes from "./Criticize";
 
 class Movie extends Model {}
 
@@ -27,10 +27,10 @@ Movie.init({
   modelName: 'Movie',
 })
 
-Movie.hasMany(Criticizes, 
-  {foreignKey : 'Criticizes_id', 
-  onDelete: 'CASCADE', 
-  onUpdate: 'CASCADE'
-});
+// Movie.hasMany(Criticizes, 
+//   {foreignKey : 'Criticizes_id', 
+//   onDelete: 'CASCADE', 
+//   onUpdate: 'CASCADE'
+// });
 
 export default Movie;

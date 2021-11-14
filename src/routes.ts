@@ -17,6 +17,7 @@ routes.get('/', async (request: Request, response: Response) => {
 
 routes.post('/movies', moviesController.store)
 routes.get('/movies', moviesController.index)
+routes.get('/movies/:id', moviesController.show)
 routes.delete('/movies/:id', moviesController.delete)
 routes.put('/movies/:id', moviesController.update)
 
@@ -27,8 +28,5 @@ routes.put('/users/:id', usersController.update)
 routes.delete('/users/:id', usersController.delete)
 
 routes.post('/login', authController.handleLogin)
-/*logout?*/
-
-
 
 export default routes;

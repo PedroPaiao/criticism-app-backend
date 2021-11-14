@@ -36,7 +36,7 @@ class AuthContoller {
       );
 
       res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24*60*60*1000} );
-      return res.json({ message : `Succes! User ${user.get('email')} is logged in.`, acessToken });
+      return res.json({ message : `Success! User ${user.get('email')} is logged in.`, acessToken });
     }
     
     return res.status(401).send({ message: 'Unathorized user. Credentials dont match!' })

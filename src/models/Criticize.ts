@@ -13,8 +13,8 @@ Criticizes.init({
   modelName: 'Criticizes',
 })
 
-Criticizes.belongsTo(Movie);
-Criticizes.belongsTo(User);
+// Criticizes.belongsTo(Movie);
+// Criticizes.belongsTo(User);
 
 module.exports = Criticizes;
 export default Criticizes;

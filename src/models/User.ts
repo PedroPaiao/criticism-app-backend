@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import connection from '../database/index';
-import Criticizes from "./Criticizes";
+import Criticizes from "./Criticize";
 
 class User extends Model {}
 

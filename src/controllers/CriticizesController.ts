@@ -1,6 +1,6 @@
 import { Response, Request } from 'express'
 
-import Criticizes from '../models/Criticizes';
+import Criticizes from '../models/Criticize';
 
 class CriticizesController {
   async store(req: Request, res: Response) {
