@@ -25,18 +25,20 @@ class AuthContoller {
       // create JWTs
       const acessToken = jwt.sign(
         { "userEmail": user.get('email') },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '60s' }
-      );
-      
-      const refreshToken = jwt.sign(
-        { "userEmail": user.get('email') },
-        process.env.REFRESH_TOKEN_SECRET,
+        user.get('token'),
         { expiresIn: '1d' }
-      );
+      );      
 
-      res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24*60*60*1000} );
-      return res.json({ message : `Success! User ${user.get('email')} is logged in.`, acessToken });
+      res.cookie('jwt', acessToken, { httpOnly: true, maxAge: 24*60*60*1000} );
+      return res.json({
+        message : `Success! User ${user.get('email')} is logged in.`,
+        user : {
+          id: user.get('id'),
+          name: user.get('name'),
+          email: user.get('email'),
+          acessToken
+        }
+      });
     }
     
     return res.status(401).send({ message: 'Unathorized user. Credentials dont match!' })
