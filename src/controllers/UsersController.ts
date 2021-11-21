@@ -1,5 +1,6 @@
 import { Response, Request } from 'express';
 import User from '../models/User';
+import { v4 as uuid  } from 'uuid';
 
 const serializer = require('express-serializer');
 
@@ -22,13 +23,16 @@ class UsersController {
     const user = await User.findByPk(id)
 
     if (!user) { return res.json({ error: "User not found!" }) }
-    return res.json(user)
+    const options = { except: ['password', 'token'] }
+    serializer(req, user, UserSerializer, options).then((json: Object) => {
+      return res.send(json)
+    })    
   }
   
   async store(req: Request, res: Response) {
-    const { name, email, password, password_confirmation } = req.body;      
-    
-    if(password != password_confirmation)
+    const { name, email, password, passwordconfirm } = req.body;    
+
+    if(password != passwordconfirm)
       return res.status(422).json({ message: 'Password dont match' })
 
     const user = await User.findOne({ where: { email: email } });    
@@ -38,8 +42,9 @@ class UsersController {
     try {
       const salt = await bcrypt.genSalt();
       const encrypted_password = await bcrypt.hash(password, salt);
-      const options = { except: 'password' }
-      const newUser = await User.create({ name, email, password: encrypted_password });
+      const user_token = uuid();
+      const options = { except: ['password', 'token'] }
+      const newUser = await User.create({ name, email, password: encrypted_password, token: user_token });
 
       serializer(req, newUser, UserSerializer, options).then((json: Object) => {
         return res.send(json)
