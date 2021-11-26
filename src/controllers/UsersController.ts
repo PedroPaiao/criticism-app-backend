@@ -5,6 +5,7 @@ import { v4 as uuid  } from 'uuid';
 const serializer = require('express-serializer');
 
 import UserSerializer from '../serializers/UserSerliazer';
+import Criticize from '../models/Criticize';
 
 const bcrypt = require('bcryptjs');
 
@@ -20,10 +21,10 @@ class UsersController {
 
   async show(req: Request, res: Response) {
     const { id } = req.params
-    const user = await User.findByPk(id)
+    const user = await User.findByPk(id, { include: Criticize })
 
     if (!user) { return res.json({ error: "User not found!" }) }
-    const options = { except: ['password', 'token'] }
+    const options = { except: ['password'] }
     serializer(req, user, UserSerializer, options).then((json: Object) => {
       return res.send(json)
     })    

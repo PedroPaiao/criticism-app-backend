@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import connection from '../database/index';
-import Criticizes from "./Criticize";
+import Criticize from "./Criticize";
 
 class User extends Model {}
 
@@ -10,15 +10,16 @@ User.init({
   password: DataTypes.STRING,
   token: DataTypes.STRING
 },
-{
-  sequelize: connection,
-  modelName: 'User'
-});
+  {
+    sequelize: connection,
+    modelName: 'User'
+  });
 
-User.hasMany(Criticizes, 
-  {foreignKey : 'Criticizes_id', 
-  onDelete: 'CASCADE', 
-  onUpdate: 'CASCADE'
-});
+User.hasMany(Criticize,
+  {
+    foreignKey: 'user_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  });
 
 export default User;

@@ -3,18 +3,35 @@ import Movie from './Movie';
 import User from './User';
 import connection from '../database/index'
 
-class Criticizes extends Model {}
+class Criticize extends Model {}
 
-Criticizes.init({
+Criticize.init({
   description: DataTypes.STRING,
-  rate: DataTypes.DECIMAL
+  rate: DataTypes.DECIMAL,
+  user_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: User,
+      key: 'id',
+    }
+  },
+  movie_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Movie,
+      key: 'id',
+    }
+  },
 }, {
   sequelize: connection,
-  modelName: 'Criticizes',
+  modelName: 'Criticize',
 })
 
-// Criticizes.belongsTo(Movie);
-// Criticizes.belongsTo(User);
+Movie.hasMany(Criticize,
+  {
+    foreignKey: 'movie_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  });
 
-module.exports = Criticizes;
-export default Criticizes;
+export default Criticize;

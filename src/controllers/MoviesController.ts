@@ -1,4 +1,5 @@
 import { Response, Request } from 'express'
+import Criticize from '../models/Criticize';
 
 import Movie from '../models/Movie'
 
@@ -18,6 +19,7 @@ class MoviesController {
         where: {
           slug: slug,
         },
+        include: Criticize
       });
     } else {
       movies = await Movie.findAll();
@@ -32,7 +34,7 @@ class MoviesController {
     if(id == null)
       return res.status(404).json({error: 'Not found'})
       
-    let movie = await Movie.findOne({ where: { id: id } })
+    let movie = await Movie.findOne({ where: { id: id }, include: Criticize })
 
     return res.json(movie)
   }
