@@ -28,10 +28,10 @@ class CriticizesController {
   }
 
   async index_by_movie(req: Request, res: Response) {
-    let movie = await Movie.findByPk(req.params.user_id)
+    let movie = await Movie.findByPk(req.params.movie_id)
     if(movie == null) return res.status(404).json({ message: 'Movie not found' })
     const criticizes = await Criticizes.findAll(
-      { where: { movie_id: movie.get('id') } }
+      { where: { movie_id: movie.get('id') }, include: User }
     );
 
     return res.json(criticizes)

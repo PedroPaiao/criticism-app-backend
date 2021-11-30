@@ -28,10 +28,12 @@ Criticize.init({
 })
 
 Movie.hasMany(Criticize,
-  {
-    foreignKey: 'movie_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
-  });
+{
+  foreignKey: 'movie_id',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+
+Criticize.belongsTo(Movie)
 
 export default Criticize;

@@ -10,10 +10,10 @@ User.init({
   password: DataTypes.STRING,
   token: DataTypes.STRING
 },
-  {
-    sequelize: connection,
-    modelName: 'User'
-  });
+{
+  sequelize: connection,
+  modelName: 'User'
+});
 
 User.hasMany(Criticize,
   {
@@ -21,5 +21,7 @@ User.hasMany(Criticize,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
   });
+
+Criticize.belongsTo(User)
 
 export default User;
