@@ -32,6 +32,7 @@ routes.delete('/users/:id', usersController.delete)
 routes.get('/criticizes', critizesController.index)
 routes.post('/movies/:movie_id/criticizes', critizesController.store)
 routes.delete('/criticizes/:criticize_id', critizesController.delete)
+routes.put('/criticizes/:criticize_id', critizesController.update)
 routes.get('/movies/:movie_id/criticizes', critizesController.index_by_movie)
 routes.get('/users/:user_id/criticizes', critizesController.index_by_user)
 

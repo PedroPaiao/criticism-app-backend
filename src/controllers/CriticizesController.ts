@@ -40,7 +40,7 @@ class CriticizesController {
     if(user == null) return res.status(404).json({ message: 'User not found' })
     
     const criticizes = await Criticize.findAll(
-      { where: { user_id: user.get('id') } }
+      { where: { user_id: user.get('id') }, include: User }
     );
 
     return res.json(criticizes)
@@ -64,15 +64,21 @@ class CriticizesController {
   }
 
   async update(req: Request, res: Response) {
-    const { user, description,rate } = req.body;
-    const id = req.params.id
+    const { description, rate } = req.body;
+    const id = req.params.criticize_id
     const criticize = await Criticize.findByPk(id)
-    
-    if(criticize == null) return res.json({ error: "Not found error" })
 
-    await criticize.update({ user, description, rate })
-
-    return res.json(criticize)
+    if (criticize) {
+      let user_id = await criticize.get('user_id')
+      if (user_id != req.headers.userid) return res.status(401).json(
+          { message: 'Unautorized function' }
+        )
+      
+      await criticize.update({ description, rate })
+      return res.json({ success: "Success on update" })
+    } else {
+      return res.status(404).json({ message: 'Criticize dont founded' })
+    }
   }
 }
 
