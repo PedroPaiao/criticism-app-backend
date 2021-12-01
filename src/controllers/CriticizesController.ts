@@ -9,7 +9,7 @@ class CriticizesController {
   async store(req: Request, res: Response) {
     let { movie_id } = req.params
     const { description, rate } = req.body;
-    const user_id = req.headers.user_id;
+    const user_id = req.headers.userid;    
     let user;
 
     if (user_id != undefined) {
