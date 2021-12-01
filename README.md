@@ -7,9 +7,9 @@
 #### Back-end
 
 - [x] CRUD movies
-- [ ] CRUD criticas
-- [ ] CRUD usuarios
-- [ ] Populate do banco
+- [x] CRUD criticas
+- [x] CRUD usuarios
+- [x] Populate do banco
 
 ### Pré-requisitos
 
@@ -32,6 +32,7 @@ $ yarn install
 # Agora vamos fazer o setup do banco, atualize o database.ts com as suas autenticações do postgres
 $ yarn sequelize db:create
 $ yarn sequelize db:migrate
+$ yarn populate
 
 # Execute a aplicação em modo de desenvolvimento
 $ yarn dev
