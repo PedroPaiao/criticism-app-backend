@@ -1,7 +1,5 @@
 import { Response, Request } from 'express'
-import { where } from 'sequelize/types';
-
-import Criticizes from '../models/Criticize';
+import Criticize from '../models/Criticize';
 import Movie from '../models/Movie';
 import User from '../models/User';
 
@@ -17,12 +15,12 @@ class CriticizesController {
     }
     if(user == null) return res.status(404).json({ message: 'User not found' })
 
-    const criticize = await Criticizes.create({user_id, description, rate, movie_id })
+    const criticize = await Criticize.create({user_id, description, rate, movie_id })
 
     return res.json(criticize);
   }
   async index(req: Request, res: Response) {
-    const criticizes = await Criticizes.findAll();
+    const criticizes = await Criticize.findAll();
 
     return res.json(criticizes)
   }
@@ -30,7 +28,7 @@ class CriticizesController {
   async index_by_movie(req: Request, res: Response) {
     let movie = await Movie.findByPk(req.params.movie_id)
     if(movie == null) return res.status(404).json({ message: 'Movie not found' })
-    const criticizes = await Criticizes.findAll(
+    const criticizes = await Criticize.findAll(
       { where: { movie_id: movie.get('id') }, include: User }
     );
 
@@ -41,7 +39,7 @@ class CriticizesController {
     let user = await User.findByPk(req.params.user_id)
     if(user == null) return res.status(404).json({ message: 'User not found' })
     
-    const criticizes = await Criticizes.findAll(
+    const criticizes = await Criticize.findAll(
       { where: { user_id: user.get('id') } }
     );
 
@@ -49,23 +47,32 @@ class CriticizesController {
   }
 
   async delete(req: Request, res: Response) {
-    const id = req.params.id
-    const criticizes = await Criticizes.findByPk(id)
-    await criticizes?.destroy()
-
-    return res.json({ success: "Success on delete" })
+    const id = req.params.criticize_id
+    const criticize = await Criticize.findByPk(id)
+    
+    if (criticize) {
+      let user_id = await criticize.get('user_id')
+      if (user_id != req.headers.userid) return res.status(401).json(
+          { message: 'Unautorized function' }
+        )
+      
+      await criticize.destroy()
+      return res.json({ success: "Success on delete" })
+    } else {
+      return res.status(404).json({ message: 'Criticize dont founded' })
+    }
   }
 
   async update(req: Request, res: Response) {
     const { user, description,rate } = req.body;
     const id = req.params.id
-    const criticizes = await Criticizes.findByPk(id)
+    const criticize = await Criticize.findByPk(id)
     
-    if(criticizes == null) return res.json({ error: "Not found error" })
+    if(criticize == null) return res.json({ error: "Not found error" })
 
-    await criticizes.update({ user, description, rate })
+    await criticize.update({ user, description, rate })
 
-    return res.json(criticizes)
+    return res.json(criticize)
   }
 }
 
