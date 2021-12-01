@@ -22,7 +22,7 @@ class MoviesController {
         include: Criticize
       });
     } else {
-      movies = await Movie.findAll();
+      movies = await Movie.findAll({ limit: 10 });
     }
 
     return res.json(movies)
